@@ -1,22 +1,28 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { nanoid } from 'nanoid'
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+} from "next/document";
+import { nanoid } from "nanoid";
 class CustomDocument extends Document {
-  static async getInitialProps(ctx) {
-    const nonce = nanoid()
-    const docProps = await ctx.defaultGetInitialProps(ctx, { nonce })
+  static async getInitialProps(ctx: DocumentContext) {
+    const nonce = nanoid();
+    const docProps = await ctx.defaultGetInitialProps(ctx, { nonce });
 
-    let contentSecurityPolicy = ''
-    if (process.env.NODE_ENV === 'production') {
-      contentSecurityPolicy = `default-src 'self'; style-src 'nonce-${nonce}';`
+    let contentSecurityPolicy = "";
+    if (process.env.NODE_ENV === "production") {
+      contentSecurityPolicy = `default-src 'self'; style-src 'nonce-${nonce}';`;
     } else {
       // react-refresh needs 'unsafe-eval'
       // Next.js needs 'unsafe-inline' during development https://github.com/vercel/next.js/blob/canary/packages/next/client/dev/fouc.js
       // Specifying 'nonce' makes a modern browsers ignore 'unsafe-inline'
-      contentSecurityPolicy = `default-src 'self'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-eval';`
+      contentSecurityPolicy = `default-src 'self'; style-src 'unsafe-inline'; script-src 'self' 'unsafe-eval';`;
     }
 
-    ctx.res.setHeader('Content-Security-Policy', contentSecurityPolicy)
-    return { ...docProps, nonce }
+    ctx.res.setHeader("Content-Security-Policy", contentSecurityPolicy);
+    return { ...docProps, nonce };
   }
 
   render() {
@@ -33,8 +39,8 @@ class CustomDocument extends Document {
           <NextScript />
         </body>
       </Html>
-    )
+    );
   }
 }
 
-export default CustomDocument
+export default CustomDocument;
